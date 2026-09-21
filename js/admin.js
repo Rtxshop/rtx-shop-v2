@@ -28,8 +28,10 @@ function previewImg(input, targetId) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const img = document.getElementById(targetId || 'previewImg');
-    img.src = e.target.result;
-    img.classList.remove('hidden');
+    if (img) {
+      img.src = e.target.result;
+      img.classList.remove('hidden');
+    }
   };
   reader.readAsDataURL(file);
 }
@@ -37,6 +39,7 @@ function previewImg(input, targetId) {
 // ===== نمایش پیام =====
 function showMsg(id, text, type) {
   const el = document.getElementById(id);
+  if (!el) return;
   el.textContent = text;
   el.className = 'msg ' + type;
   setTimeout(() => { el.className = 'msg'; }, 4000);
@@ -46,57 +49,65 @@ function showMsg(id, text, type) {
 async function updateStats() {
   try {
     const accounts = await getAccounts();
-    document.getElementById('statTotal').textContent = accounts.length;
-    document.getElementById('statAvailable').textContent = accounts.filter(a => a.status === 'available').length;
-    document.getElementById('statSold').textContent = accounts.filter(a => a.status === 'sold').length;
+    const total = document.getElementById('statTotal');
+    const avail = document.getElementById('statAvailable');
+    const sold = document.getElementById('statSold');
+    if (total) total.textContent = accounts.length;
+    if (avail) avail.textContent = accounts.filter(a => a.status === 'available').length;
+    if (sold) sold.textContent = accounts.filter(a => a.status === 'sold').length;
   } catch (e) { console.warn('آمار لود نشد:', e); }
 }
 
 // ===== ثبت اکانت جدید =====
-document.getElementById('accountForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ در حال ثبت...';
+const accountForm = document.getElementById('accountForm');
+if (accountForm) {
+  accountForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ در حال ثبت...';
 
-  try {
-    const imageFile = document.getElementById('fImage').files[0];
-    let imageUrl = null;
-    if (imageFile) {
-      imageUrl = await uploadImage(imageFile);
+    try {
+      const imageFile = document.getElementById('fImage').files[0];
+      let imageUrl = null;
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
+      const account = {
+        title: document.getElementById('fTitle').value.trim(),
+        tagline: document.getElementById('fTagline').value.trim(),
+        townhall: parseInt(document.getElementById('fTownhall').value) || null,
+        builder: parseInt(document.getElementById('fBuilder').value) || null,
+        name_change: parseInt(document.getElementById('fNameChange').value) || null,
+        price: parseInt(document.getElementById('fPrice').value),
+        code: document.getElementById('fCode').value.trim(),
+        description: document.getElementById('fDescription').value.trim(),
+        status: document.getElementById('fStatus').value,
+        image_url: imageUrl
+      };
+
+      await addAccount(account);
+
+      showMsg('addMsg', '✅ اکانت با موفقیت ثبت شد!', 'success');
+      accountForm.reset();
+      const preview = document.getElementById('previewImg');
+      if (preview) preview.classList.add('hidden');
+      updateStats();
+    } catch (err) {
+      console.error(err);
+      showMsg('addMsg', '❌ خطا: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🚀 ثبت اکانت';
     }
-
-    const account = {
-      title: document.getElementById('fTitle').value.trim(),
-      tagline: document.getElementById('fTagline').value.trim(),
-      townhall: parseInt(document.getElementById('fTownhall').value) || null,
-      builder: parseInt(document.getElementById('fBuilder').value) || null,
-      name_change: parseInt(document.getElementById('fNameChange').value) || null,
-      price: parseInt(document.getElementById('fPrice').value),
-      code: document.getElementById('fCode').value.trim(),
-      description: document.getElementById('fDescription').value.trim(),
-      status: document.getElementById('fStatus').value,
-      image_url: imageUrl
-    };
-
-    await addAccount(account);
-
-    showMsg('addMsg', '✅ اکانت با موفقیت ثبت شد!', 'success');
-    document.getElementById('accountForm').reset();
-    document.getElementById('previewImg').classList.add('hidden');
-    updateStats();
-  } catch (err) {
-    console.error(err);
-    showMsg('addMsg', '❌ خطا: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '🚀 ثبت اکانت';
-  }
-});
+  });
+}
 
 // ===== بارگذاری لیست اکانت‌ها =====
 async function loadAccountsList() {
   const list = document.getElementById('accountsList');
+  if (!list) return;
   list.innerHTML = 'در حال بارگذاری...';
   try {
     const accounts = await getAccounts();
@@ -123,7 +134,7 @@ async function loadAccountsList() {
         </div>
         <div class="account-actions">
           <button onclick="toggleStatus('${acc.id}', '${acc.status}')" title="تغییر وضعیت">🔄</button>
-          <button onclick="openEditModal('${acc.id}')" style="background:rgba(0,217,255,0.1);color:#00D9FF;border-color:rgba(0,217,255,0.3);" title="ویرایش">✏️</button>
+          <button class="btn-edit" onclick="openEditModal('${acc.id}')" title="ویرایش">✏️</button>
           <button onclick="removeAccount('${acc.id}', '${acc.image_url || ''}')" title="حذف">🗑</button>
         </div>
       </div>
@@ -164,86 +175,102 @@ async function openEditModal(id) {
   try {
     const accounts = await getAccounts();
     const acc = accounts.find(a => a.id === id);
-    if (!acc) return;
+    if (!acc) {
+      alert('اکانت پیدا نشد');
+      return;
+    }
 
     editingId = acc.id;
     editingOldImage = acc.image_url;
 
-    document.getElementById('efTitle').value = acc.title || '';
-    document.getElementById('efTagline').value = acc.tagline || '';
-    document.getElementById('efTownhall').value = acc.townhall || '';
-    document.getElementById('efBuilder').value = acc.builder || '';
-    document.getElementById('efNameChange').value = acc.name_change || '';
-    document.getElementById('efPrice').value = acc.price || '';
-    document.getElementById('efCode').value = acc.code || '';
-    document.getElementById('efDescription').value = acc.description || '';
-    document.getElementById('efStatus').value = acc.status || 'available';
+    const setVal = (elId, val) => {
+      const el = document.getElementById(elId);
+      if (el) el.value = val;
+    };
+
+    setVal('efTitle', acc.title || '');
+    setVal('efTagline', acc.tagline || '');
+    setVal('efTownhall', acc.townhall || '');
+    setVal('efBuilder', acc.builder || '');
+    setVal('efNameChange', acc.name_change || '');
+    setVal('efPrice', acc.price || '');
+    setVal('efCode', acc.code || '');
+    setVal('efDescription', acc.description || '');
+    setVal('efStatus', acc.status || 'available');
 
     const preview = document.getElementById('editPreviewImg');
-    if (acc.image_url) {
-      preview.src = acc.image_url;
-      preview.classList.remove('hidden');
-    } else {
-      preview.classList.add('hidden');
+    if (preview) {
+      if (acc.image_url) {
+        preview.src = acc.image_url;
+        preview.classList.remove('hidden');
+      } else {
+        preview.classList.add('hidden');
+      }
     }
 
-    document.getElementById('editModal').classList.add('active');
-    document.getElementById('editMsg').className = 'msg';
-    document.getElementById('efImage').value = '';
+    const fileInput = document.getElementById('efImage');
+    if (fileInput) fileInput.value = '';
+
+    const modal = document.getElementById('editModal');
+    if (modal) modal.classList.add('active');
   } catch (err) {
     alert('خطا: ' + err.message);
   }
 }
 
 function closeEditModal() {
-  document.getElementById('editModal').classList.remove('active');
+  const modal = document.getElementById('editModal');
+  if (modal) modal.classList.remove('active');
   editingId = null;
   editingOldImage = null;
 }
 
 // ===== ذخیره ویرایش =====
-document.getElementById('editForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = document.getElementById('editSubmitBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ در حال ذخیره...';
+const editForm = document.getElementById('editForm');
+if (editForm) {
+  editForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('editSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ در حال ذخیره...';
 
-  try {
-    const imageFile = document.getElementById('efImage').files[0];
-    let imageUrl = editingOldImage;
+    try {
+      const imageFile = document.getElementById('efImage').files[0];
+      let imageUrl = editingOldImage;
 
-    if (imageFile) {
-      if (editingOldImage) await deleteImage(editingOldImage);
-      imageUrl = await uploadImage(imageFile);
+      if (imageFile) {
+        if (editingOldImage) await deleteImage(editingOldImage);
+        imageUrl = await uploadImage(imageFile);
+      }
+
+      const updates = {
+        title: document.getElementById('efTitle').value.trim(),
+        tagline: document.getElementById('efTagline').value.trim(),
+        townhall: parseInt(document.getElementById('efTownhall').value) || null,
+        builder: parseInt(document.getElementById('efBuilder').value) || null,
+        name_change: parseInt(document.getElementById('efNameChange').value) || null,
+        price: parseInt(document.getElementById('efPrice').value),
+        code: document.getElementById('efCode').value.trim(),
+        description: document.getElementById('efDescription').value.trim(),
+        status: document.getElementById('efStatus').value,
+        image_url: imageUrl
+      };
+
+      await updateAccount(editingId, updates);
+
+      showMsg('editMsg', '✅ تغییرات ذخیره شد!', 'success');
+      setTimeout(() => {
+        closeEditModal();
+        loadAccountsList();
+      }, 800);
+    } catch (err) {
+      showMsg('editMsg', '❌ خطا: ' + err.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '💾 ذخیره تغییرات';
     }
-
-    const updates = {
-      title: document.getElementById('efTitle').value.trim(),
-      tagline: document.getElementById('efTagline').value.trim(),
-      townhall: parseInt(document.getElementById('efTownhall').value) || null,
-      builder: parseInt(document.getElementById('efBuilder').value) || null,
-      name_change: parseInt(document.getElementById('efNameChange').value) || null,
-      price: parseInt(document.getElementById('efPrice').value),
-      code: document.getElementById('efCode').value.trim(),
-      description: document.getElementById('efDescription').value.trim(),
-      status: document.getElementById('efStatus').value,
-      image_url: imageUrl
-    };
-
-    await updateAccount(editingId, updates);
-
-    showMsg('editMsg', '✅ تغییرات ذخیره شد!', 'success');
-    setTimeout(() => {
-      closeEditModal();
-      loadAccountsList();
-    }, 800);
-  } catch (err) {
-    showMsg('editMsg', '❌ خطا: ' + err.message, 'error');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '💾 ذخیره تغییرات';
-  }
-});
+  });
+}
 
 // ===== شروع =====
 updateStats();
