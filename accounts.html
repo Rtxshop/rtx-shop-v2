@@ -4,116 +4,307 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>لیست اکانت‌ها | RTX Shop</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --neon-blue: #00D9FF;
+    --neon-purple: #B026FF;
+    --neon-pink: #FF2E88;
+    --neon-green: #00FF88;
+    --gold: #FFB800;
+    --dark: #0A0A15;
+    --dark-2: #12122A;
+    --text: #F8FAFC;
+    --muted: #94A3B8;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: 'Vazirmatn', sans-serif;
-    background: #0F0F1E; color: #F8FAFC;
+    background: var(--dark);
+    color: var(--text);
     line-height: 1.8;
+    overflow-x: hidden;
+    position: relative;
   }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(176, 38, 255, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(0, 217, 255, 0.15) 0%, transparent 40%);
+    z-index: -2;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0, 217, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 217, 255, 0.04) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: -1;
+    mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 80%);
+  }
+
   header {
-    background: rgba(15,15,30,0.95);
-    border-bottom: 1px solid rgba(255,184,0,0.2);
-    padding: 14px 20px; position: sticky; top: 0;
-    z-index: 100; display: flex;
-    justify-content: space-between; align-items: center;
+    background: rgba(10, 10, 21, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.2);
+    padding: 14px 24px;
+    position: sticky; top: 0; z-index: 100;
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 12px;
   }
-  header .logo { color: #FFB800; font-weight: 900; font-size: 18px; }
+  header .logo {
+    font-family: 'Bebas Neue', 'Vazirmatn', sans-serif;
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
   header nav a {
-    color: #FFB800; text-decoration: none;
-    font-weight: 700; font-size: 13px;
-  }
-  .container { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
-  h1 { color: #FFB800; text-align: center; margin-bottom: 24px; }
-  .filters {
-    display: flex; gap: 10px; margin-bottom: 20px;
-    flex-wrap: wrap; justify-content: center;
-  }
-  .filters input, .filters select {
-    padding: 10px 14px; background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,184,0,0.3);
-    border-radius: 10px; color: #F8FAFC;
-    font-family: inherit; font-size: 14px;
-  }
-  .filters input { flex: 1; min-width: 200px; max-width: 400px; }
-  .filters input:focus, .filters select:focus {
-    outline: none; border-color: #FFB800;
-  }
-  .accounts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-  }
-  .account-card {
-    background: linear-gradient(135deg, #1A1A2E, #252540);
-    border: 1px solid rgba(255,184,0,0.2);
-    border-radius: 16px; overflow: hidden;
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    background: rgba(0, 217, 255, 0.05);
     transition: all 0.3s;
   }
+  header nav a:hover {
+    background: rgba(0, 217, 255, 0.15);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+  h1 {
+    font-family: 'Bebas Neue', 'Vazirmatn', sans-serif;
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+  }
+
+  /* فیلترها */
+  .filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .filters input, .filters select {
+    padding: 12px 18px;
+    background: rgba(18, 18, 42, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 217, 255, 0.25);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
+  .filters input { flex: 1; min-width: 220px; max-width: 400px; }
+  .filters input:focus, .filters select:focus {
+    outline: none;
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.15), 0 0 25px rgba(0, 217, 255, 0.3);
+    background: rgba(10, 10, 21, 0.95);
+  }
+  .filters input::placeholder { color: #475569; }
+  .filters select option { background: var(--dark-2); }
+
+  /* Grid */
+  .accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .account-card {
+    background: linear-gradient(135deg, rgba(18, 18, 42, 0.9), rgba(28, 28, 58, 0.9));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 217, 255, 0.15);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.4s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
   .account-card:hover {
-    transform: translateY(-4px);
-    border-color: #FFB800;
+    transform: translateY(-6px);
+    border-color: var(--neon-purple);
+    box-shadow: 0 20px 50px rgba(176, 38, 255, 0.3);
   }
   .account-card .img-box {
-    width: 100%; height: 180px;
-    background: #252540;
-    display: flex; align-items: center;
-    justify-content: center; font-size: 60px;
-    overflow: hidden; position: relative;
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(135deg, #12122A, #1C1C3A);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    overflow: hidden;
+    position: relative;
   }
-  .account-card .img-box img { width: 100%; height: 100%; object-fit: cover; }
-  .account-card .status {
-    position: absolute; top: 10px; right: 10px;
-    padding: 4px 10px; border-radius: 999px;
-    font-size: 11px; font-weight: 800;
+  .account-card .img-box img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
   }
-  .status-available { background: #00C853; color: #0F0F1E; }
-  .status-sold { background: #E63946; color: #fff; }
-  .account-card .body { padding: 16px; }
-  .account-card h3 { font-size: 15px; margin-bottom: 6px; }
-  .account-card .tagline {
-    font-size: 12px; color: #94A3B8;
-    margin-bottom: 8px;
+  .account-card:hover .img-box img { transform: scale(1.1); }
+  .account-card .img-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(10, 10, 21, 0.9), transparent);
+    pointer-events: none;
+  }
+  .account-card .status-badge {
+    position: absolute;
+    top: 12px; right: 12px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    z-index: 2;
+    backdrop-filter: blur(10px);
+  }
+  .status-available {
+    background: rgba(0, 255, 136, 0.2);
+    color: var(--neon-green);
+    border: 1px solid var(--neon-green);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+  }
+  .status-sold {
+    background: rgba(255, 46, 136, 0.2);
+    color: var(--neon-pink);
+    border: 1px solid var(--neon-pink);
+  }
+  .account-card .body {
+    padding: 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .account-card h3 {
+    font-size: 16px;
+    margin-bottom: 6px;
+    color: #fff;
+    font-weight: 700;
+  }
+  .account-card .tagline-small {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    min-height: 18px;
   }
   .account-card .price {
-    color: #FFB800; font-size: 18px;
-    font-weight: 900; margin-bottom: 10px;
+    font-family: 'Bebas Neue', 'Vazirmatn', sans-serif;
+    font-size: 24px;
+    background: linear-gradient(135deg, var(--gold), #FFD466);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
   }
   .account-card .meta {
-    font-size: 12px; color: #94A3B8;
-    display: flex; gap: 8px; flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
     margin-bottom: 12px;
   }
   .account-card .meta span {
-    background: rgba(255,184,0,0.1);
-    padding: 2px 8px; border-radius: 6px;
-    color: #FFB800;
+    background: rgba(0, 217, 255, 0.08);
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: var(--neon-blue);
+    border: 1px solid rgba(0, 217, 255, 0.15);
   }
   .account-card .desc {
-    font-size: 12px; color: #94A3B8;
+    font-size: 12px;
+    color: var(--muted);
     margin-bottom: 12px;
     white-space: pre-wrap;
-    max-height: 80px; overflow: hidden;
+    max-height: 80px;
+    overflow: hidden;
+    line-height: 1.7;
   }
-  .account-card .btn {
-    display: block; text-align: center;
-    background: linear-gradient(135deg, #FFB800, #E5A500);
-    color: #0F0F1E; padding: 10px;
-    border-radius: 10px; text-decoration: none;
-    font-weight: 800; font-size: 13px;
+  .account-card .contact {
+    margin-top: auto;
+    display: block;
+    text-align: center;
+    background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+    color: #fff;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 13px;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(176, 38, 255, 0.3);
   }
-  .account-card.sold { opacity: 0.6; }
+  .account-card .contact:hover {
+    box-shadow: 0 0 40px rgba(176, 38, 255, 0.6);
+    transform: translateY(-2px);
+  }
+  .account-card.sold { opacity: 0.55; }
+
   .loading, .empty {
-    text-align: center; color: #94A3B8;
-    padding: 60px 20px; grid-column: 1 / -1;
+    text-align: center;
+    color: var(--muted);
+    padding: 80px 20px;
+    grid-column: 1 / -1;
   }
-  .empty .emoji { font-size: 60px; display: block; margin-bottom: 12px; }
+  .empty .emoji {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 14px;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 4px solid rgba(0, 217, 255, 0.2);
+    border-top-color: var(--neon-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   footer {
-    text-align: center; padding: 30px;
-    border-top: 1px solid rgba(255,184,0,0.2);
-    color: #94A3B8; font-size: 12px;
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid rgba(0, 217, 255, 0.15);
+    color: var(--muted);
+    font-size: 13px;
     margin-top: 40px;
+  }
+  footer .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+    letter-spacing: 2px;
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 24px 16px; }
+    h1 { font-size: 26px; }
+    .filters input { min-width: 100%; }
   }
 </style>
 </head>
@@ -129,18 +320,24 @@
     <div class="filters">
       <input type="text" id="searchInput" placeholder="🔍 جستجو در عنوان یا کد اکانت...">
       <select id="statusFilter">
-        <option value="all">همه</option>
+        <option value="all">همه وضعیت‌ها</option>
         <option value="available">✅ موجود</option>
         <option value="sold">❌ فروش رفته</option>
       </select>
     </div>
 
     <div id="accountsGrid" class="accounts-grid">
-      <div class="loading">در حال بارگذاری...</div>
+      <div class="loading">
+        <div class="spinner"></div>
+        در حال بارگذاری...
+      </div>
     </div>
   </div>
 
-  <footer>© RTX Shop - تمامی حقوق محفوظ است</footer>
+  <footer>
+    <div class="brand">RTX SHOP</div>
+    <p>© تمامی حقوق محفوظ است</p>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
@@ -154,7 +351,7 @@
         allAccounts = await getAccounts();
         render();
       } catch (err) {
-        grid.innerHTML = '<div class="loading" style="color:#FF8A8A;">خطا: ' + err.message + '</div>';
+        grid.innerHTML = '<div class="loading" style="color:#FF2E88;">خطا: ' + err.message + '</div>';
       }
     }
 
@@ -183,21 +380,26 @@
         <div class="account-card ${acc.status === 'sold' ? 'sold' : ''}">
           <div class="img-box">
             ${acc.image_url ? `<img src="${acc.image_url}" alt="${acc.title}">` : '🎮'}
-            <div class="status ${acc.status === 'available' ? 'status-available' : 'status-sold'}">
+            <span class="status-badge ${acc.status === 'available' ? 'status-available' : 'status-sold'}">
               ${acc.status === 'available' ? '✅ موجود' : '❌ فروش رفته'}
-            </div>
+            </span>
           </div>
           <div class="body">
             <h3>${acc.title}</h3>
-            ${acc.tagline ? `<div class="tagline">${acc.tagline}</div>` : ''}
+            ${acc.tagline ? `<div class="tagline-small">${acc.tagline}</div>` : ''}
             <div class="price">${acc.price.toLocaleString('fa-IR')} تومان</div>
             <div class="meta">
               <span>🏰 تاون ${acc.townhall || '-'}</span>
               <span>🔢 کد ${acc.code}</span>
-              ${acc.builder ? `<span>🏗 بیلدر ${acc.builder}</span>` : ''}
-              ${acc.name_change ? `<span>✏️ تغییر نام ${acc.name_change}</span>` : ''}
+              ${acc.builder ? `<span>🏗 ${acc.builder}</span>` : ''}
+              ${acc.name_change ? `<span>✏️ ${acc.name_change}</span>` : ''}
             </div>
             ${acc.description ? `<div class="desc">${acc.description}</div>` : ''}
+            ${acc.status === 'available' ? `
+              <a href="https://t.me/ADMIN_RTX" target="_blank" class="contact">🛒 خرید اکانت</a>
+            ` : `
+              <div class="contact" style="background:rgba(255,46,136,0.15);color:#FF2E88;border:1px solid rgba(255,46,136,0.3);box-shadow:none;cursor:not-allowed;">❌ فروش رفته</div>
+            `}
           </div>
         </div>
       `).join('');
