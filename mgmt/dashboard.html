@@ -1,568 +1,117 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پنل مدیریت | RTX Shop</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Vazirmatn:wght@400;600;700;900&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --neon-blue: #00D9FF;
-    --neon-purple: #B026FF;
-    --neon-pink: #FF2E88;
-    --neon-green: #00FF88;
-    --gold: #FFB800;
-    --dark: #0A0A15;
-    --dark-2: #12122A;
-    --dark-3: #1C1C3A;
-    --text: #F8FAFC;
-    --muted: #94A3B8;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Vazirmatn', sans-serif;
-    background: var(--dark);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-  }
-  /* پس‌زمینه نئون متحرک */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(176, 38, 255, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 85% 80%, rgba(0, 217, 255, 0.15) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, rgba(255, 46, 136, 0.08) 0%, transparent 50%);
-    z-index: -2;
-    animation: bgPulse 8s ease-in-out infinite alternate;
-  }
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0, 217, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 217, 255, 0.04) 1px, transparent 1px);
-    background-size: 50px 50px;
-    z-index: -1;
-    mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
-    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 80%);
-  }
-  @keyframes bgPulse {
-    0% { opacity: 0.7; }
-    100% { opacity: 1; }
-  }
-
-  header {
-    background: rgba(10, 10, 21, 0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 217, 255, 0.2);
-    padding: 16px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  header h1 {
-    font-family: 'Bebas Neue', 'Vazirmatn', sans-serif;
-    font-size: 22px;
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: 1px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  header h1 .dot {
-    width: 10px; height: 10px;
-    background: var(--neon-green);
-    border-radius: 50%;
-    box-shadow: 0 0 15px var(--neon-green);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-  header button {
-    background: rgba(255, 46, 136, 0.1);
-    color: var(--neon-pink);
-    border: 1px solid rgba(255, 46, 136, 0.4);
-    padding: 9px 16px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: 13px;
-    transition: all 0.3s;
-  }
-  header button:hover {
-    background: rgba(255, 46, 136, 0.25);
-    box-shadow: 0 0 20px rgba(255, 46, 136, 0.5);
-    transform: translateY(-2px);
-  }
-
-  .container {
-    max-width: 950px;
-    margin: 0 auto;
-    padding: 24px 20px;
-  }
-
-  /* آمار */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .stat {
-    background: linear-gradient(135deg, rgba(18, 18, 42, 0.8), rgba(28, 28, 58, 0.8));
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 217, 255, 0.15);
-    border-radius: 16px;
-    padding: 16px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-  }
-  .stat:hover {
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 25px rgba(0, 217, 255, 0.3);
-    transform: translateY(-3px);
-  }
-  .stat::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-    animation: slide 3s infinite;
-  }
-  @keyframes slide {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-  .stat .num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: 900;
-  }
-  .stat .label { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 4px; }
-
-  /* تب‌ها */
-  .tabs {
-    display: flex; gap: 8px;
-    background: rgba(18, 18, 42, 0.8);
-    backdrop-filter: blur(10px);
-    padding: 6px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-    border: 1px solid rgba(0, 217, 255, 0.15);
-  }
-  .tab {
-    flex: 1;
-    padding: 12px;
-    background: transparent;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 700;
-    border-radius: 12px;
-    font-size: 14px;
-    transition: all 0.3s;
-    position: relative;
-  }
-  .tab.active {
-    background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
-    color: #fff;
-    box-shadow: 0 0 25px rgba(176, 38, 255, 0.5);
-  }
-
-  /* کارت */
-  .card {
-    background: linear-gradient(135deg, rgba(18, 18, 42, 0.9), rgba(28, 28, 58, 0.9));
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 217, 255, 0.15);
-    border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-    position: relative;
-    overflow: hidden;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: -50%; right: -50%;
-    width: 200%; height: 200%;
-    background: radial-gradient(circle, rgba(0, 217, 255, 0.05) 0%, transparent 60%);
-    pointer-events: none;
-  }
-  .card h2 {
-    font-family: 'Bebas Neue', 'Vazirmatn', sans-serif;
-    font-size: 22px;
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 20px;
-    letter-spacing: 1px;
-    display: flex; align-items: center; gap: 10px;
-  }
-
-  /* فیلدها */
-  .field { margin-bottom: 16px; }
-  .field label {
-    display: block;
-    font-size: 12px;
-    color: var(--neon-blue);
-    margin-bottom: 8px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-  .field input, .field textarea, .field select {
-    width: 100%;
-    padding: 12px 14px;
-    background: rgba(10, 10, 21, 0.6);
-    border: 1px solid rgba(0, 217, 255, 0.2);
-    border-radius: 12px;
-    color: var(--text);
-    font-family: inherit;
-    font-size: 14px;
-    transition: all 0.3s;
-  }
-  .field input:focus, .field textarea:focus, .field select:focus {
-    outline: none;
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 0 4px rgba(0, 217, 255, 0.15), 0 0 20px rgba(0, 217, 255, 0.2);
-    background: rgba(10, 10, 21, 0.9);
-  }
-  .field textarea { min-height: 100px; resize: vertical; }
-  .field select option { background: var(--dark-2); }
-
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-
-  /* آپلود */
-  .upload-box {
-    border: 2px dashed rgba(176, 38, 255, 0.4);
-    border-radius: 14px;
-    padding: 28px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: rgba(176, 38, 255, 0.03);
-    position: relative;
-  }
-  .upload-box:hover {
-    border-color: var(--neon-purple);
-    background: rgba(176, 38, 255, 0.08);
-    box-shadow: 0 0 30px rgba(176, 38, 255, 0.3);
-  }
-  .upload-box .icon {
-    font-size: 40px;
-    display: block;
-    margin-bottom: 8px;
-    animation: bounce 2s infinite;
-  }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-  .upload-box input { display: none; }
-  .preview-img {
-    max-width: 180px;
-    border-radius: 12px;
-    margin: 12px auto 0;
-    display: block;
-    border: 2px solid var(--neon-purple);
-    box-shadow: 0 0 20px rgba(176, 38, 255, 0.4);
-  }
-
-  /* دکمه */
-  .btn {
-    padding: 14px 24px;
-    border: none;
-    border-radius: 14px;
-    font-family: inherit;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.3s;
-    font-size: 14px;
-  }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
-    color: #fff;
-    width: 100%;
-    box-shadow: 0 0 25px rgba(176, 38, 255, 0.4);
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 40px rgba(176, 38, 255, 0.7), 0 10px 30px rgba(0, 0, 0, 0.3);
-  }
-  .btn-primary:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
-  }
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%;
-    width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s;
-  }
-  .btn-primary:hover::before { left: 100%; }
-
-  /* پیام */
-  .msg {
-    padding: 14px 16px;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    font-weight: 600;
-    display: none;
-    text-align: center;
-  }
-  .msg.success {
-    background: rgba(0, 255, 136, 0.1);
-    color: var(--neon-green);
-    border: 1px solid rgba(0, 255, 136, 0.4);
-    box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
-    display: block;
-    animation: slideDown 0.4s;
-  }
-  .msg.error {
-    background: rgba(255, 46, 136, 0.1);
-    color: var(--neon-pink);
-    border: 1px solid rgba(255, 46, 136, 0.4);
-    box-shadow: 0 0 20px rgba(255, 46, 136, 0.2);
-    display: block;
-    animation: shake 0.4s;
-  }
-  @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-  }
-
-  /* لیست اکانت‌ها */
-  .accounts-list { display: grid; gap: 12px; }
-  .account-row {
-    background: linear-gradient(135deg, rgba(18, 18, 42, 0.7), rgba(28, 28, 58, 0.7));
-    border: 1px solid rgba(0, 217, 255, 0.15);
-    border-radius: 14px;
-    padding: 16px;
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    flex-wrap: wrap;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-  .account-row:hover {
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 25px rgba(0, 217, 255, 0.2);
-    transform: translateX(-4px);
-  }
-  .account-row::before {
-    content: '';
-    position: absolute;
-    right: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: linear-gradient(180deg, var(--neon-blue), var(--neon-purple));
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .account-row:hover::before { opacity: 1; }
-  .account-row img, .account-row .no-img {
-    width: 60px; height: 60px;
-    border-radius: 10px;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 1px solid rgba(0, 217, 255, 0.3);
-  }
-  .account-row .no-img {
-    background: linear-gradient(135deg, rgba(176, 38, 255, 0.2), rgba(0, 217, 255, 0.2));
-    display: flex; align-items: center;
-    justify-content: center; font-size: 28px;
-  }
-  .account-row .info { flex: 1; min-width: 150px; }
-  .account-row h3 { font-size: 14px; margin-bottom: 4px; color: #fff; }
-  .account-row .meta { font-size: 12px; color: var(--muted); }
-  .account-row .meta .badge {
-    background: rgba(0, 217, 255, 0.1);
-    color: var(--neon-blue);
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 11px;
-    margin-left: 6px;
-    display: inline-block;
-    border: 1px solid rgba(0, 217, 255, 0.2);
-  }
-  .account-actions { display: flex; gap: 6px; }
-  .account-actions button {
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    transition: all 0.3s;
-    background: rgba(255, 46, 136, 0.1);
-    color: var(--neon-pink);
-    border: 1px solid rgba(255, 46, 136, 0.3);
-  }
-  .account-actions button:hover {
-    background: rgba(255, 46, 136, 0.25);
-    box-shadow: 0 0 15px rgba(255, 46, 136, 0.4);
-  }
-
-  .hidden { display: none !important; }
-
-  @media (max-width: 640px) {
-    .row-2, .row-3 { grid-template-columns: 1fr; }
-    .container { padding: 16px; }
-    .card { padding: 18px; }
-    header h1 { font-size: 16px; }
-    .account-row { flex-direction: column; align-items: flex-start; }
-    .account-actions { width: 100%; }
-  }
-</style>
-</head>
-<body>
-  <header>
-    <h1><span class="dot"></span> پنل مدیریت RTX</h1>
-    <button onclick="logout()">🚪 خروج</button>
-  </header>
-
-  <div class="container">
-    <!-- آمار -->
-    <div class="stats">
-      <div class="stat">
-        <div class="num" id="statTotal">0</div>
-        <div class="label">📊 مجموع اکانت‌ها</div>
-      </div>
-      <div class="stat">
-        <div class="num" id="statAvailable">0</div>
-        <div class="label">✅ موجود</div>
-      </div>
-      <div class="stat">
-        <div class="num" id="statSold">0</div>
-        <div class="label">❌ فروش رفته</div>
-      </div>
+<!-- مودال ویرایش -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>✏️ ویرایش اکانت</h2>
+      <button onclick="closeEditModal()" class="close-btn">✕</button>
     </div>
-
-    <!-- تب‌ها -->
-    <div class="tabs">
-      <button class="tab active" data-tab="add">➕ افزودن اکانت</button>
-      <button class="tab" data-tab="list">📋 لیست اکانت‌ها</button>
-    </div>
-
-    <!-- تب افزودن -->
-    <div id="tab-add">
-      <div class="card">
-        <h2>➕ افزودن اکانت جدید</h2>
-        <div class="msg" id="addMsg"></div>
-        <form id="accountForm">
-          <div class="row-2">
-            <div class="field">
-              <label>🎮 عنوان اکانت *</label>
-              <input type="text" id="fTitle" required placeholder="اکانت کلش آف کلنز">
-            </div>
-            <div class="field">
-              <label>💫 شعار / تگلاین</label>
-              <input type="text" id="fTagline" placeholder="🔥 نقد و اقساط کاملا تضمینی 🔥">
-            </div>
-          </div>
-
-          <div class="row-3">
-            <div class="field">
-              <label>🏰 تاون هال *</label>
-              <input type="number" id="fTownhall" required min="1" max="18" placeholder="12">
-            </div>
-            <div class="field">
-              <label>🏗 لول دهکده بیلدر</label>
-              <input type="number" id="fBuilder" placeholder="10">
-            </div>
-            <div class="field">
-              <label>✏️ هزینه تغییر نام</label>
-              <input type="number" id="fNameChange" placeholder="500">
-            </div>
-          </div>
-
-          <div class="row-2">
-            <div class="field">
-              <label>💰 قیمت (تومان) *</label>
-              <input type="number" id="fPrice" required placeholder="5800">
-            </div>
-            <div class="field">
-              <label>🔢 کد اکانت *</label>
-              <input type="text" id="fCode" required placeholder="232">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>📝 توضیحات</label>
-            <textarea id="fDescription" placeholder="آیدی ادمین جهت خرید و فروش: @ADMIN_RTX"></textarea>
-          </div>
-
-          <div class="field">
-            <label>🔘 وضعیت</label>
-            <select id="fStatus">
-              <option value="available">✅ موجود</option>
-              <option value="sold">❌ فروش رفته</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label>📸 عکس اکانت</label>
-            <div class="upload-box" onclick="document.getElementById('fImage').click()">
-              <span class="icon">🎮</span>
-              <div>برای انتخاب عکس کلیک کن</div>
-              <input type="file" id="fImage" accept="image/*" onchange="previewImg(this)">
-            </div>
-            <img id="previewImg" class="preview-img hidden">
-          </div>
-
-          <button type="submit" class="btn btn-primary" id="submitBtn">🚀 ثبت اکانت</button>
-        </form>
+    <div class="msg" id="editMsg"></div>
+    <form id="editForm">
+      <div class="row-2">
+        <div class="field">
+          <label>🎮 عنوان *</label>
+          <input type="text" id="efTitle" required>
+        </div>
+        <div class="field">
+          <label>💫 شعار</label>
+          <input type="text" id="efTagline">
+        </div>
       </div>
-    </div>
 
-    <!-- تب لیست -->
-    <div id="tab-list" class="hidden">
-      <div class="card">
-        <h2>📋 لیست اکانت‌ها</h2>
-        <div id="accountsList" class="accounts-list">در حال بارگذاری...</div>
+      <div class="row-3">
+        <div class="field">
+          <label>🏰 تاون هال</label>
+          <input type="number" id="efTownhall" min="1" max="18">
+        </div>
+        <div class="field">
+          <label>🏗 بیلدر</label>
+          <input type="number" id="efBuilder">
+        </div>
+        <div class="field">
+          <label>✏️ تغییر نام</label>
+          <input type="number" id="efNameChange">
+        </div>
       </div>
-    </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>💰 قیمت *</label>
+          <input type="number" id="efPrice" required>
+        </div>
+        <div class="field">
+          <label>🔢 کد اکانت *</label>
+          <input type="text" id="efCode" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>📝 توضیحات</label>
+        <textarea id="efDescription"></textarea>
+      </div>
+
+      <div class="field">
+        <label>🔘 وضعیت</label>
+        <select id="efStatus">
+          <option value="available">✅ موجود</option>
+          <option value="sold">❌ فروش رفته</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>📸 تغییر عکس (اختیاری)</label>
+        <div class="upload-box" onclick="document.getElementById('efImage').click()">
+          <span class="icon">🖼</span>
+          <div>برای انتخاب عکس جدید کلیک کن</div>
+          <input type="file" id="efImage" accept="image/*" onchange="previewImg(this, 'editPreviewImg')">
+        </div>
+        <img id="editPreviewImg" class="preview-img hidden">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 16px;">
+        <button type="submit" class="btn btn-primary" id="editSubmitBtn" style="flex: 1;">💾 ذخیره تغییرات</button>
+        <button type="button" class="btn" onclick="closeEditModal()" style="background:rgba(255,46,136,0.1);color:#FF2E88;border:1px solid rgba(255,46,136,0.3);">انصراف</button>
+      </div>
+    </form>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/config.js"></script>
-  <script src="../js/supabase-client.js"></script>
-  <script src="../js/admin.js"></script>
-</body>
- </html>
+<style>
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(10px);
+    display: none; align-items: center;
+    justify-content: center; padding: 20px;
+    z-index: 1000; overflow-y: auto;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: linear-gradient(135deg, rgba(18,18,42,0.98), rgba(28,28,58,0.98));
+    border: 1px solid rgba(0,217,255,0.3);
+    border-radius: 20px; padding: 24px;
+    max-width: 600px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 0 60px rgba(176,38,255,0.3);
+    margin: auto;
+  }
+  .modal-header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 20px;
+  }
+  .modal-header h2 {
+    font-family: 'Bebas Neue', 'Vazirmatn', sans-serif;
+    font-size: 22px;
+    background: linear-gradient(135deg, #00D9FF, #B026FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .close-btn {
+    background: rgba(255,46,136,0.1);
+    color: #FF2E88;
+    border: 1px solid rgba(255,46,136,0.3);
+    width: 32px; height: 32px;
+    border-radius: 8px; cursor: pointer;
+    font-size: 16px; font-weight: 700;
+  }
+  .close-btn:hover { background: rgba(255,46,136,0.25); }
+</style>
