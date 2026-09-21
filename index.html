@@ -14,6 +14,7 @@
     --neon-green: #00FF88;
     --gold: #FFB800;
     --dark: #0A0A15;
+    --dark-2: #12122A;
     --text: #F8FAFC;
     --muted: #94A3B8;
   }
@@ -378,36 +379,28 @@
     letter-spacing: 2px;
   }
   footer .contact-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: inline-block;
     text-decoration: none;
-    padding: 10px 18px;
-    border-radius: 12px;
+    padding: 8px 16px;
+    border-radius: 10px;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 700;
     transition: all 0.3s;
     margin: 5px 3px;
   }
-  footer .contact-btn:hover { transform: translateY(-3px); }
+  footer .contact-btn:hover { transform: translateY(-2px); }
   footer .btn-admin-rubika {
     color: #00D9FF;
-    border: 1px solid rgba(0,217,255,0.4);
-    background: rgba(0,217,255,0.08);
+    border: 1px solid rgba(0,217,255,0.3);
+    background: rgba(0,217,255,0.05);
   }
-  footer .btn-admin-rubika:hover {
-    box-shadow: 0 0 25px rgba(0,217,255,0.5);
-    background: rgba(0,217,255,0.15);
-  }
+  footer .btn-admin-rubika:hover { box-shadow: 0 0 20px rgba(0,217,255,0.4); }
   footer .btn-admin-phone {
     color: #FF2E88;
-    border: 1px solid rgba(255,46,136,0.4);
-    background: rgba(255,46,136,0.08);
+    border: 1px solid rgba(255,46,136,0.3);
+    background: rgba(255,46,136,0.05);
   }
-  footer .btn-admin-phone:hover {
-    box-shadow: 0 0 25px rgba(255,46,136,0.5);
-    background: rgba(255,46,136,0.15);
-  }
+  footer .btn-admin-phone:hover { box-shadow: 0 0 20px rgba(255,46,136,0.4); }
 
   @media (max-width: 640px) {
     .hero { padding: 40px 16px 30px; }
@@ -489,10 +482,16 @@
     <div class="brand">RTX SHOP</div>
     <p style="margin-bottom:16px;">© تمامی حقوق محفوظ است</p>
 
-    <div style="font-size:13px; color:#94A3B8; margin-bottom:12px; font-weight:700;">👨‍💼 ارتباط با مدیریت:</div>
-    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; padding:0 10px;">
+    <div style="font-size:12px; color:#94A3B8; margin-bottom:8px;">🛒 ارتباط با مدیریت:</div>
+    <div style="margin-bottom:16px;">
       <a href="https://rubika.ir/ADMIN_RTX" target="_blank" class="contact-btn btn-admin-rubika">🛒 @ADMIN_RTX</a>
       <a href="tel:+989022300687" class="contact-btn btn-admin-phone">📞 09022300687</a>
+    </div>
+
+    <div style="font-size:12px; color:#94A3B8; margin-bottom:8px;">👨‍💼 ارتباط با فروشنده:</div>
+    <div>
+      <a href="https://rubika.ir/vaset_rtx" target="_blank" class="contact-btn btn-seller-rubika" style="color:#B026FF; border:1px solid rgba(176,38,255,0.3); background:rgba(176,38,255,0.05);">🛒 @vaset_rtx</a>
+      <a href="tel:+989941036313" class="contact-btn btn-seller-phone" style="color:#00FF88; border:1px solid rgba(0,255,136,0.3); background:rgba(0,255,136,0.05);">📞 09941036313</a>
     </div>
   </footer>
 
