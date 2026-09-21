@@ -2,10 +2,11 @@ const { createClient } = supabase;
 const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function uploadImage(file) {
-  const fileName = `${Date.now()}-${file.name}`;
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const { data, error } = await db.storage
     .from(BUCKET_NAME)
-    .upload(fileName, file);
+    .upload(fileName, file, { upsert: false });
   if (error) throw error;
   const { data: urlData } = db.storage
     .from(BUCKET_NAME)
@@ -15,8 +16,10 @@ async function uploadImage(file) {
 
 async function deleteImage(imageUrl) {
   if (!imageUrl) return;
-  const fileName = imageUrl.split('/').pop();
-  await db.storage.from(BUCKET_NAME).remove([fileName]);
+  try {
+    const fileName = imageUrl.split('/').pop();
+    await db.storage.from(BUCKET_NAME).remove([fileName]);
+  } catch (e) { console.warn('حذف عکس ناموفق:', e); }
 }
 
 async function getAccounts() {
