@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لیست اکانت‌ها | RTX Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: #0F0F1E; color: #F8FAFC;
+    line-height: 1.8;
+  }
+  header {
+    background: rgba(15,15,30,0.95);
+    border-bottom: 1px solid rgba(255,184,0,0.2);
+    padding: 14px 20px; position: sticky; top: 0;
+    z-index: 100; display: flex;
+    justify-content: space-between; align-items: center;
+  }
+  header .logo { color: #FFB800; font-weight: 900; font-size: 18px; }
+  header nav a {
+    color: #FFB800; text-decoration: none;
+    font-weight: 700; font-size: 13px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
+  h1 { color: #FFB800; text-align: center; margin-bottom: 24px; }
+  .filters {
+    display: flex; gap: 10px; margin-bottom: 20px;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .filters input, .filters select {
+    padding: 10px 14px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,184,0,0.3);
+    border-radius: 10px; color: #F8FAFC;
+    font-family: inherit; font-size: 14px;
+  }
+  .filters input { flex: 1; min-width: 200px; max-width: 400px; }
+  .filters input:focus, .filters select:focus {
+    outline: none; border-color: #FFB800;
+  }
+  .accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .account-card {
+    background: linear-gradient(135deg, #1A1A2E, #252540);
+    border: 1px solid rgba(255,184,0,0.2);
+    border-radius: 16px; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .account-card:hover {
+    transform: translateY(-4px);
+    border-color: #FFB800;
+  }
+  .account-card .img-box {
+    width: 100%; height: 180px;
+    background: #252540;
+    display: flex; align-items: center;
+    justify-content: center; font-size: 60px;
+    overflow: hidden; position: relative;
+  }
+  .account-card .img-box img { width: 100%; height: 100%; object-fit: cover; }
+  .account-card .status {
+    position: absolute; top: 10px; right: 10px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 800;
+  }
+  .status-available { background: #00C853; color: #0F0F1E; }
+  .status-sold { background: #E63946; color: #fff; }
+  .account-card .body { padding: 16px; }
+  .account-card h3 { font-size: 15px; margin-bottom: 6px; }
+  .account-card .tagline {
+    font-size: 12px; color: #94A3B8;
+    margin-bottom: 8px;
+  }
+  .account-card .price {
+    color: #FFB800; font-size: 18px;
+    font-weight: 900; margin-bottom: 10px;
+  }
+  .account-card .meta {
+    font-size: 12px; color: #94A3B8;
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .account-card .meta span {
+    background: rgba(255,184,0,0.1);
+    padding: 2px 8px; border-radius: 6px;
+    color: #FFB800;
+  }
+  .account-card .desc {
+    font-size: 12px; color: #94A3B8;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    max-height: 80px; overflow: hidden;
+  }
+  .account-card .btn {
+    display: block; text-align: center;
+    background: linear-gradient(135deg, #FFB800, #E5A500);
+    color: #0F0F1E; padding: 10px;
+    border-radius: 10px; text-decoration: none;
+    font-weight: 800; font-size: 13px;
+  }
+  .account-card.sold { opacity: 0.6; }
+  .loading, .empty {
+    text-align: center; color: #94A3B8;
+    padding: 60px 20px; grid-column: 1 / -1;
+  }
+  .empty .emoji { font-size: 60px; display: block; margin-bottom: 12px; }
+  footer {
+    text-align: center; padding: 30px;
+    border-top: 1px solid rgba(255,184,0,0.2);
+    color: #94A3B8; font-size: 12px;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">💎 RTX Shop</div>
+    <nav><a href="index.html">🏠 خانه</a></nav>
+  </header>
+
+  <div class="container">
+    <h1>🛍 همه اکانت‌ها</h1>
+
+    <div class="filters">
+      <input type="text" id="searchInput" placeholder="🔍 جستجو در عنوان یا کد اکانت...">
+      <select id="statusFilter">
+        <option value="all">همه</option>
+        <option value="available">✅ موجود</option>
+        <option value="sold">❌ فروش رفته</option>
+      </select>
+    </div>
+
+    <div id="accountsGrid" class="accounts-grid">
+      <div class="loading">در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <footer>© RTX Shop - تمامی حقوق محفوظ است</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script>
+    let allAccounts = [];
+
+    async function loadAll() {
+      const grid = document.getElementById('accountsGrid');
+      try {
+        allAccounts = await getAccounts();
+        render();
+      } catch (err) {
+        grid.innerHTML = '<div class="loading" style="color:#FF8A8A;">خطا: ' + err.message + '</div>';
+      }
+    }
+
+    function render() {
+      const grid = document.getElementById('accountsGrid');
+      const search = document.getElementById('searchInput').value.trim().toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+
+      let filtered = allAccounts;
+      if (status !== 'all') {
+        filtered = filtered.filter(a => a.status === status);
+      }
+      if (search) {
+        filtered = filtered.filter(a =>
+          (a.title || '').toLowerCase().includes(search) ||
+          (a.code || '').toLowerCase().includes(search)
+        );
+      }
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="empty"><span class="emoji">🔍</span><p>اکانتی پیدا نشد</p></div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(acc => `
+        <div class="account-card ${acc.status === 'sold' ? 'sold' : ''}">
+          <div class="img-box">
+            ${acc.image_url ? `<img src="${acc.image_url}" alt="${acc.title}">` : '🎮'}
+            <div class="status ${acc.status === 'available' ? 'status-available' : 'status-sold'}">
+              ${acc.status === 'available' ? '✅ موجود' : '❌ فروش رفته'}
+            </div>
+          </div>
+          <div class="body">
+            <h3>${acc.title}</h3>
+            ${acc.tagline ? `<div class="tagline">${acc.tagline}</div>` : ''}
+            <div class="price">${acc.price.toLocaleString('fa-IR')} تومان</div>
+            <div class="meta">
+              <span>🏰 تاون ${acc.townhall || '-'}</span>
+              <span>🔢 کد ${acc.code}</span>
+              ${acc.builder ? `<span>🏗 بیلدر ${acc.builder}</span>` : ''}
+              ${acc.name_change ? `<span>✏️ تغییر نام ${acc.name_change}</span>` : ''}
+            </div>
+            ${acc.description ? `<div class="desc">${acc.description}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('searchInput').addEventListener('input', render);
+    document.getElementById('statusFilter').addEventListener('change', render);
+
+    loadAll();
+  </script>
+</body>
+</html>
