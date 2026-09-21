@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت | RTX Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Vazirmatn', sans-serif;
+    background: #0F0F1E; color: #F8FAFC;
+    min-height: 100vh;
+  }
+  header {
+    background: rgba(15,15,30,0.95);
+    border-bottom: 1px solid rgba(255,184,0,0.2);
+    padding: 14px 20px;
+    display: flex; justify-content: space-between;
+    align-items: center; position: sticky;
+    top: 0; z-index: 100;
+  }
+  header h1 { font-size: 16px; color: #FFB800; }
+  header button {
+    background: rgba(230,57,70,0.15);
+    color: #FF8A8A; border: 1px solid rgba(230,57,70,0.5);
+    padding: 8px 14px; border-radius: 8px;
+    cursor: pointer; font-family: inherit;
+    font-weight: 700;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+  .card {
+    background: linear-gradient(135deg, #1A1A2E, #252540);
+    border: 1px solid rgba(255,184,0,0.2);
+    border-radius: 16px; padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    color: #FFB800; margin-bottom: 20px;
+    font-size: 18px;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 13px;
+    color: #FFB800; margin-bottom: 6px;
+    font-weight: 700;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%; padding: 10px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,184,0,0.2);
+    border-radius: 8px; color: #F8FAFC;
+    font-family: inherit; font-size: 14px;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none; border-color: #FFB800;
+  }
+  .field textarea { min-height: 80px; resize: vertical; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn {
+    padding: 12px 20px; border: none;
+    border-radius: 10px; font-family: inherit;
+    font-weight: 800; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #FFB800, #E5A500);
+    color: #0F0F1E; width: 100%;
+  }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .upload-box {
+    border: 2px dashed rgba(255,184,0,0.3);
+    border-radius: 10px; padding: 20px;
+    text-align: center; cursor: pointer;
+    transition: all 0.3s;
+  }
+  .upload-box:hover { border-color: #FFB800; }
+  .upload-box input { display: none; }
+  .preview-img {
+    max-width: 150px; border-radius: 10px;
+    margin: 10px auto 0; display: block;
+  }
+  .msg {
+    padding: 12px; border-radius: 10px;
+    margin-bottom: 14px; font-size: 13px;
+    display: none; text-align: center;
+  }
+  .msg.success {
+    background: rgba(0,200,83,0.15);
+    color: #4ADE80; border: 1px solid rgba(0,200,83,0.5);
+    display: block;
+  }
+  .msg.error {
+    background: rgba(230,57,70,0.15);
+    color: #FF8A8A; border: 1px solid rgba(230,57,70,0.5);
+    display: block;
+  }
+  .accounts-list { display: grid; gap: 12px; }
+  .account-row {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,184,0,0.2);
+    border-radius: 12px; padding: 14px;
+    display: flex; gap: 12px;
+    align-items: center; flex-wrap: wrap;
+  }
+  .account-row img {
+    width: 60px; height: 60px; object-fit: cover;
+    border-radius: 8px;
+  }
+  .account-row .info { flex: 1; min-width: 150px; }
+  .account-row h3 { font-size: 14px; margin-bottom: 4px; }
+  .account-row .meta { font-size: 12px; color: #94A3B8; }
+  .account-actions { display: flex; gap: 6px; }
+  .account-actions button {
+    padding: 6px 10px; border-radius: 6px;
+    border: none; cursor: pointer;
+    font-family: inherit; font-size: 12px;
+    font-weight: 700;
+  }
+  .btn-del { background: rgba(230,57,70,0.2); color: #FF8A8A; }
+  .hidden { display: none !important; }
+  .tabs {
+    display: flex; gap: 8px; margin-bottom: 20px;
+    background: #1A1A2E; padding: 6px;
+    border-radius: 12px;
+  }
+  .tab {
+    flex: 1; padding: 10px;
+    background: transparent; border: none;
+    color: #94A3B8; cursor: pointer;
+    font-family: inherit; font-weight: 700;
+    border-radius: 8px;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, #FFB800, #E5A500);
+    color: #0F0F1E;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <h1>🎛 پنل مدیریت RTX</h1>
+    <button onclick="logout()">🚪 خروج</button>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-tab="add">➕ افزودن اکانت</button>
+      <button class="tab" data-tab="list">📋 لیست اکانت‌ها</button>
+    </div>
+
+    <!-- تب افزودن -->
+    <div id="tab-add">
+      <div class="card">
+        <h2>➕ افزودن اکانت جدید</h2>
+        <div class="msg" id="addMsg"></div>
+        <form id="accountForm">
+          <div class="field">
+            <label>عنوان اکانت *</label>
+            <input type="text" id="fTitle" required>
+          </div>
+          <div class="field">
+            <label>شعار / تگلاین</label>
+            <input type="text" id="fTagline">
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>تاون هال *</label>
+              <input type="number" id="fTownhall" required min="1" max="18">
+            </div>
+            <div class="field">
+              <label>لول دهکده بیلدر</label>
+              <input type="number" id="fBuilder">
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label>هزینه تغییر نام</label>
+              <input type="number" id="fNameChange">
+            </div>
+            <div class="field">
+              <label>قیمت (تومان) *</label>
+              <input type="number" id="fPrice" required>
+            </div>
+          </div>
+          <div class="field">
+            <label>کد اکانت *</label>
+            <input type="text" id="fCode" required>
+          </div>
+          <div class="field">
+            <label>توضیحات</label>
+            <textarea id="fDescription"></textarea>
+          </div>
+          <div class="field">
+            <label>وضعیت</label>
+            <select id="fStatus">
+              <option value="available">✅ موجود</option>
+              <option value="sold">❌ فروش رفته</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>عکس اکانت</label>
+            <div class="upload-box" onclick="document.getElementById('fImage').click()">
+              📁 برای انتخاب عکس کلیک کن
+              <input type="file" id="fImage" accept="image/*" onchange="previewImg(this)">
+            </div>
+            <img id="previewImg" class="preview-img hidden">
+          </div>
+          <button type="submit" class="btn btn-primary" id="submitBtn">📤 ثبت اکانت</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- تب لیست -->
+    <div id="tab-list" class="hidden">
+      <div class="card">
+        <h2>📋 لیست اکانت‌ها</h2>
+        <div id="accountsList" class="accounts-list">در حال بارگذاری...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- اسکریپت‌های Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/supabase-client.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
