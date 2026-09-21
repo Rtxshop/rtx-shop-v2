@@ -48,7 +48,6 @@
     -webkit-mask-image: radial-gradient(circle at 50% 50%, black 20%, transparent 80%);
   }
 
-  /* Header */
   header {
     background: rgba(10, 10, 21, 0.85);
     backdrop-filter: blur(20px);
@@ -86,7 +85,6 @@
     transform: translateY(-2px);
   }
 
-  /* Hero */
   .hero {
     text-align: center;
     padding: 60px 20px 40px;
@@ -144,7 +142,6 @@
     box-shadow: 0 0 50px rgba(176, 38, 255, 0.8);
   }
 
-  /* Stats */
   .stats {
     display: flex;
     justify-content: center;
@@ -171,7 +168,6 @@
   }
   .stat .label { font-size: 12px; color: var(--muted); font-weight: 600; }
 
-  /* Section */
   .section { max-width: 1200px; margin: 0 auto; padding: 50px 20px; }
   .section h2 {
     font-family: 'Bebas Neue', 'Vazirmatn', sans-serif;
@@ -184,7 +180,6 @@
     -webkit-text-fill-color: transparent;
   }
 
-  /* Features */
   .features {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -230,7 +225,6 @@
   }
   .feature p { color: var(--muted); font-size: 13px; }
 
-  /* Accounts Grid */
   .accounts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -244,6 +238,8 @@
     overflow: hidden;
     transition: all 0.4s;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
   .account-card:hover {
     transform: translateY(-6px);
@@ -296,7 +292,7 @@
     color: var(--neon-pink);
     border: 1px solid var(--neon-pink);
   }
-  .account-card .body { padding: 18px; }
+  .account-card .body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
   .account-card h3 {
     font-size: 15px;
     margin-bottom: 8px;
@@ -346,6 +342,7 @@
     font-size: 13px;
     transition: all 0.3s;
     box-shadow: 0 0 20px rgba(176, 38, 255, 0.3);
+    margin-top: auto;
   }
   .account-card .btn:hover {
     box-shadow: 0 0 40px rgba(176, 38, 255, 0.6);
@@ -374,7 +371,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Footer */
   footer {
     text-align: center;
     padding: 40px 20px;
@@ -392,6 +388,41 @@
     margin-bottom: 8px;
     letter-spacing: 2px;
   }
+  footer .contact-btn {
+    display: inline-block;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.3s;
+    margin: 5px 3px;
+  }
+  footer .contact-btn:hover { transform: translateY(-2px); }
+  footer .btn-admin-rubika {
+    color: #00D9FF;
+    border: 1px solid rgba(0,217,255,0.3);
+    background: rgba(0,217,255,0.05);
+  }
+  footer .btn-admin-rubika:hover { box-shadow: 0 0 20px rgba(0,217,255,0.4); }
+  footer .btn-admin-phone {
+    color: #FF2E88;
+    border: 1px solid rgba(255,46,136,0.3);
+    background: rgba(255,46,136,0.05);
+  }
+  footer .btn-admin-phone:hover { box-shadow: 0 0 20px rgba(255,46,136,0.4); }
+  footer .btn-seller-rubika {
+    color: #B026FF;
+    border: 1px solid rgba(176,38,255,0.3);
+    background: rgba(176,38,255,0.05);
+  }
+  footer .btn-seller-rubika:hover { box-shadow: 0 0 20px rgba(176,38,255,0.4); }
+  footer .btn-seller-phone {
+    color: #00FF88;
+    border: 1px solid rgba(0,255,136,0.3);
+    background: rgba(0,255,136,0.05);
+  }
+  footer .btn-seller-phone:hover { box-shadow: 0 0 20px rgba(0,255,136,0.4); }
 
   @media (max-width: 640px) {
     .hero { padding: 40px 16px 30px; }
@@ -471,7 +502,19 @@
 
   <footer>
     <div class="brand">RTX SHOP</div>
-    <p>© تمامی حقوق محفوظ است</p>
+    <p style="margin-bottom:16px;">© تمامی حقوق محفوظ است</p>
+
+    <div style="font-size:12px; color:#94A3B8; margin-bottom:8px;">👨‍💼 ارتباط با ادمین:</div>
+    <div style="margin-bottom:16px;">
+      <a href="https://rubika.ir/ADMIN_RTX" target="_blank" class="contact-btn btn-admin-rubika">🛒 @ADMIN_RTX</a>
+      <a href="tel:+989022300687" class="contact-btn btn-admin-phone">📞 09022300687</a>
+    </div>
+
+    <div style="font-size:12px; color:#94A3B8; margin-bottom:8px;">🛒 ارتباط با فروشنده:</div>
+    <div>
+      <a href="https://rubika.ir/vaset_rtx" target="_blank" class="contact-btn btn-seller-rubika">🛒 @vaset_rtx</a>
+      <a href="tel:+989941036313" class="contact-btn btn-seller-phone">📞 09941036313</a>
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -501,7 +544,7 @@
                 <span>🏰 تاون ${acc.townhall || '-'}</span>
                 <span>🔢 کد ${acc.code}</span>
               </div>
-              <a href="accounts.html" class="btn">مشاهده جزئیات</a>
+              <a href="accounts.html" class="btn">👁 مشاهده جزئیات</a>
             </div>
           </div>
         `).join('');
